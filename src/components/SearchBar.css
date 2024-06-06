@@ -1,0 +1,36 @@
+form {
+  display: flex;
+  flex-direction: row;
+  background-color: whitesmoke;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0;
+  border: solid 2px transparent;
+
+  height: 48px;
+
+  transition: border-color ease-in-out 0.3s;
+
+  &.error {
+    border-color: rgba(255, 0, 0, 0.4);
+  }
+
+  &:not(.error) {
+    border-color: transparent;
+  }
+}
+
+input {
+  background-color: transparent;
+
+  box-shadow: none;
+  height: 100%;
+  margin: 0;
+  padding: 0 20px;
+
+  &:focus {
+    box-shadow: none;
+  }
+}
