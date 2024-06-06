@@ -39,9 +39,5 @@
       position: absolute;
       right: 5px;
     }
-
-    > {
-      width: auto;
-    }
   }
 }
