@@ -14,7 +14,7 @@ import { GeoJSON } from "ol/format";
 // OpenLayer Sources
 import { TileWMS } from "ol/source";
 
-import geoJSONData from "../data/realData.geojson";
+import geoJSONData from "../data/map_municipalities.geojson";
 
 export function useMap() {
   useEffect(() => {
