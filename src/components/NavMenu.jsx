@@ -5,7 +5,7 @@ import { FloatingMenu } from "./FloatingMenu";
 import "./NavMenu.css";
 import { useState } from "react";
 
-export function NavMenu() {
+export function NavMenu({ toolTip }) {
   const [enableMenu, setEnableMenu] = useState(false);
 
   const handleMenuToggle = () => {
@@ -14,7 +14,11 @@ export function NavMenu() {
 
   return (
     <nav className="NavMenu">
-      <FloatingMenu enabled={enableMenu} toggleEnabled={handleMenuToggle} />
+      <FloatingMenu
+        enabled={enableMenu}
+        toggleEnabled={handleMenuToggle}
+        toolTip={toolTip}
+      />
       <SearchBar />
     </nav>
   );

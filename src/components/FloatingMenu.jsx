@@ -4,8 +4,20 @@ import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 
 import "./FloatingMenu.css";
 import { IconButton } from "@mui/material";
+import { useEffect } from "react";
 
-export function FloatingMenu({ enabled, toggleEnabled }) {
+function useMenuData({ toolTip, enabled, toggleEnabled }) {
+  useEffect(() => {
+    if (toolTip && !enabled) {
+      toggleEnabled();
+    } else if (!toolTip && enabled) {
+      toggleEnabled();
+    }
+  }, [toolTip]);
+}
+
+export function FloatingMenu({ enabled, toggleEnabled, toolTip }) {
+  useMenuData({ toolTip, enabled, toggleEnabled });
   return (
     <>
       {enabled ? (
@@ -20,7 +32,7 @@ export function FloatingMenu({ enabled, toggleEnabled }) {
               <CloseFullscreenIcon />
             </IconButton>
           </header>
-          <main>Cuerpo</main>
+          {toolTip ? <p>{toolTip}</p> : <></>}
         </section>
       ) : (
         <section className="FloatingMenuOpen">

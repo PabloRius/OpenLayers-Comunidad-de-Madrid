@@ -9,7 +9,7 @@ import { NavMenu } from "./components/NavMenu";
 import { useMap } from "./hooks/useMap";
 
 function App() {
-  useMap();
+  const { toolTip } = useMap();
 
   return (
     <>
@@ -24,7 +24,7 @@ function App() {
           left: 0,
         }}
       />
-      <NavMenu />
+      <NavMenu toolTip={toolTip} />
     </>
   );
 }

@@ -1,5 +1,5 @@
 // React Hooks
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // OpenLayer components
 import Map from "ol/Map";
@@ -17,11 +17,13 @@ import { TileWMS } from "ol/source";
 import geoJSONData from "../data/map_municipalities.geojson";
 
 export function useMap() {
+  const [toolTip, setToolTip] = useState(null);
   useEffect(() => {
     const map = new Map({
       target: "map",
     });
 
+    // Load the official Madrid map source from ign-base
     const source = new TileWMS({
       url: "https://www.ign.es/wms-inspire/ign-base",
       params: { LAYERS: "IGNBaseTodo", Tiled: true },
@@ -55,15 +57,32 @@ export function useMap() {
       }),
     });
 
-    const muncipalityLayerfromUrl = new VectorLayer({
+    // Load the GeoJSON layer with the border vectors
+    const muncipalityLayer = new VectorLayer({
       source: new VectorSource({
         url: geoJSONData,
         format: new GeoJSON(),
       }),
       style: muncipalityStyle,
     });
-    map.addLayer(muncipalityLayerfromUrl);
+    map.addLayer(muncipalityLayer);
+
+    // Add tooltip interaction
+    map.on("singleclick", function (event) {
+      const feature = map.forEachFeatureAtPixel(event.pixel, function (feat) {
+        return feat;
+      });
+
+      if (feature) {
+        const muncipalityName = feature.get("NAMEUNIT");
+        setToolTip(muncipalityName);
+      } else {
+        setToolTip(null);
+      }
+    });
 
     return () => map.setTarget(null);
   }, []);
+
+  return { toolTip };
 }
