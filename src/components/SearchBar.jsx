@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
+import CloseIcon from "@mui/icons-material/Close";
 
 import "./SearchBar.css";
 import { parseSearch } from "../services/search";
@@ -49,8 +50,10 @@ export function SearchBar({
   );
 
   const handleSelect = (name) => {
+    console.log(selected, name);
     if (selected !== name) {
       updateSelected(name);
+      setShowResults(false);
     }
   };
 
@@ -69,15 +72,7 @@ export function SearchBar({
   };
 
   const handleFocus = () => {
-    if (searchResults.length > 0) {
-      setShowResults(true);
-    }
-  };
-
-  const handleBlur = (event) => {
-    if (!event.currentTarget.contains(event.relatedTarget)) {
-      setShowResults(false);
-    }
+    setShowResults(true);
   };
 
   const handleKeyDown = (event) => {
@@ -87,15 +82,23 @@ export function SearchBar({
     }
   };
 
+  const handleReset = () => {
+    updateSearch("");
+    searchMunicipality({ byName: null });
+  };
+
   return (
     <search
       className="searchBar-container"
-      onBlur={handleBlur}
       onKeyDown={handleKeyDown}
       tabIndex="0"
     >
       <Tooltip title={error} placement="right">
-        <form onSubmit={handleSubmit} className={error ? "error" : ""}>
+        <form
+          onSubmit={handleSubmit}
+          className={error ? "error" : ""}
+          onReset={handleReset}
+        >
           <input
             ref={inputRef}
             required
@@ -105,6 +108,13 @@ export function SearchBar({
             onChange={handleChange}
             onFocus={handleFocus}
           />
+          <IconButton
+            size="large"
+            disabled={search !== "" ? false : true}
+            type="reset"
+          >
+            <CloseIcon />
+          </IconButton>
           <IconButton
             size="large"
             disabled={error ? true : false}

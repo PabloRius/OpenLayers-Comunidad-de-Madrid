@@ -30,10 +30,14 @@ export function useMap() {
   const dataLayerRef = useRef(null);
 
   const searchMunicipality = ({ byName }) => {
-    const results = names.filter((name) =>
-      name.toLowerCase().includes(byName.toLowerCase())
-    );
-    setSearchResults(results);
+    if (byName) {
+      const results = names.filter((name) =>
+        name.toLowerCase().includes(byName.toLowerCase())
+      );
+      setSearchResults(results);
+    } else {
+      setSearchResults([]);
+    }
   };
 
   const clearFeature = () => {
@@ -44,6 +48,7 @@ export function useMap() {
   };
 
   const updateSelected = (name) => {
+    console.log(name);
     if (dataLayerRef.current) {
       const features = dataLayerRef.current.getSource().getFeatures();
       const feature = features.find((feat) => feat.get("NAMEUNIT") === name);
