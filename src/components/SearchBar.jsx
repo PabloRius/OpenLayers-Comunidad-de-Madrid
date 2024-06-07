@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { IconButton, Tooltip } from "@mui/material";
+/* eslint-disable react/prop-types */
+import { useCallback, useEffect, useRef, useState } from "react";
+import { IconButton, Tooltip, debounce } from "@mui/material";
 
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 
 import "./SearchBar.css";
+import { parseSearch } from "../services/search";
 
 function useSearch() {
   const [search, updateSearch] = useState("");
@@ -16,28 +18,25 @@ function useSearch() {
       return;
     }
 
-    if (search === "") {
-      setError("Search can't be empty");
-      return;
-    }
-
-    if (search.length < 3) {
-      setError("Search must have at least 3 characters");
-      return;
-    }
-
-    setError(null);
+    setError(parseSearch(search));
   }, [search]);
 
   return { search, updateSearch, error };
 }
 
-export function SearchBar() {
+export function SearchBar({ searchMunicipality }) {
   const { search, updateSearch, error } = useSearch();
+
+  const debouncedSearchMunicipalities = useCallback(
+    debounce((search) => {
+      searchMunicipality({ byName: search });
+    }, 300),
+    [searchMunicipality]
+  );
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(search);
+    searchMunicipality({ byName: search });
   };
 
   const handleChange = (event) => {
@@ -45,6 +44,8 @@ export function SearchBar() {
     updateSearch(newSearch);
 
     // Operate with the search
+    if (parseSearch(newSearch)) return;
+    debouncedSearchMunicipalities(newSearch);
   };
 
   return (
@@ -55,6 +56,7 @@ export function SearchBar() {
           size="large"
           disabled={error ? true : false}
           color={error ? "error" : "default"}
+          type="submit"
         >
           <TravelExploreIcon />
         </IconButton>

@@ -5,7 +5,7 @@ import { FloatingMenu } from "./FloatingMenu";
 import "./NavMenu.css";
 import { useState } from "react";
 
-export function NavMenu({ toolTip }) {
+export function NavMenu({ toolTip, searchMunicipality }) {
   const [enableMenu, setEnableMenu] = useState(false);
 
   const handleMenuToggle = () => {
@@ -19,7 +19,7 @@ export function NavMenu({ toolTip }) {
         toggleEnabled={handleMenuToggle}
         toolTip={toolTip}
       />
-      <SearchBar />
+      <SearchBar searchMunicipality={searchMunicipality} />
     </nav>
   );
 }

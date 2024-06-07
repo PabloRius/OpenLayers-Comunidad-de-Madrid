@@ -1,5 +1,5 @@
 // React Hooks
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // OpenLayer components
 import Map from "ol/Map";
@@ -18,6 +18,59 @@ import geoJSONData from "../data/map_municipalities.geojson";
 
 export function useMap() {
   const [toolTip, setToolTip] = useState(null);
+  const [selectedFeature, setSelectedFeature] = useState(null);
+  const currentView = useRef(null);
+
+  const searchMunicipality = ({ byName }) => {
+    console.log(byName);
+  };
+
+  const selectedMunicipalityStyle = useMemo(() => {
+    return new Style({
+      stroke: new Stroke({
+        color: "grey",
+        width: 2,
+      }),
+      fill: new Fill({
+        color: "rgba(0, 0, 255, 0.2)",
+      }),
+    });
+  }, []);
+
+  const defaultMunicipalityStyle = useMemo(() => {
+    return new Style({
+      stroke: new Stroke({
+        color: "grey",
+        width: 2,
+      }),
+      fill: new Fill({
+        color: "rgba(0, 0, 0, 0.2)",
+      }),
+    });
+  }, []);
+
+  useEffect(() => {
+    if (selectedFeature) {
+      selectedFeature.setStyle(selectedMunicipalityStyle);
+      const muncipalityName = selectedFeature.get("NAMEUNIT");
+      setToolTip(muncipalityName);
+
+      if (!currentView) return;
+
+      currentView.current.fit(selectedFeature.getGeometry().getExtent(), {
+        duration: 500,
+        padding: [50, 50, 50, 50],
+      });
+    } else {
+      setToolTip(null);
+    }
+  }, [
+    selectedFeature,
+    defaultMunicipalityStyle,
+    selectedMunicipalityStyle,
+    currentView,
+  ]);
+
   useEffect(() => {
     const map = new Map({
       target: "map",
@@ -47,15 +100,7 @@ export function useMap() {
       })
     );
 
-    const muncipalityStyle = new Style({
-      stroke: new Stroke({
-        color: "blue",
-        width: 2,
-      }),
-      fill: new Fill({
-        color: "rgba(0, 0, 255, 0.1)",
-      }),
-    });
+    currentView.current = map.getView();
 
     // Load the GeoJSON layer with the border vectors
     const muncipalityLayer = new VectorLayer({
@@ -63,7 +108,7 @@ export function useMap() {
         url: geoJSONData,
         format: new GeoJSON(),
       }),
-      style: muncipalityStyle,
+      style: defaultMunicipalityStyle,
     });
     map.addLayer(muncipalityLayer);
 
@@ -74,15 +119,27 @@ export function useMap() {
       });
 
       if (feature) {
-        const muncipalityName = feature.get("NAMEUNIT");
-        setToolTip(muncipalityName);
+        setSelectedFeature((prev) => {
+          prev?.setStyle(defaultMunicipalityStyle);
+          return feature;
+        });
       } else {
-        setToolTip(null);
+        setSelectedFeature((prev) => {
+          prev?.setStyle(defaultMunicipalityStyle);
+          return null;
+        });
       }
     });
 
-    return () => map.setTarget(null);
-  }, []);
+    // Change cursor style on hover over a feature
+    map.on("pointermove", function (event) {
+      const pixel = map.getEventPixel(event.originalEvent);
+      const hit = map.hasFeatureAtPixel(pixel);
+      map.getTargetElement().style.cursor = hit ? "pointer" : "";
+    });
 
-  return { toolTip };
+    return () => map.setTarget(null);
+  }, [defaultMunicipalityStyle]);
+
+  return { toolTip, searchMunicipality };
 }
