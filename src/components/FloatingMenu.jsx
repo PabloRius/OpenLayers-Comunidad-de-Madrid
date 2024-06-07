@@ -6,18 +6,18 @@ import "./FloatingMenu.css";
 import { IconButton } from "@mui/material";
 import { useEffect } from "react";
 
-function useMenuData({ toolTip, enabled, toggleEnabled }) {
+function useMenuData({ selected, enabled, toggleEnabled }) {
   useEffect(() => {
-    if (toolTip && !enabled) {
+    if (selected && !enabled) {
       toggleEnabled();
-    } else if (!toolTip && enabled) {
+    } else if (!selected && enabled) {
       toggleEnabled();
     }
-  }, [toolTip]);
+  }, [selected]);
 }
 
-export function FloatingMenu({ enabled, toggleEnabled, toolTip }) {
-  useMenuData({ toolTip, enabled, toggleEnabled });
+export function FloatingMenu({ enabled, toggleEnabled, selected }) {
+  useMenuData({ selected, enabled, toggleEnabled });
   return (
     <>
       {enabled ? (
@@ -32,7 +32,7 @@ export function FloatingMenu({ enabled, toggleEnabled, toolTip }) {
               <CloseFullscreenIcon />
             </IconButton>
           </header>
-          {toolTip ? <p>{toolTip}</p> : <></>}
+          {selected ? <p>{selected}</p> : <></>}
         </section>
       ) : (
         <section className="FloatingMenuOpen">

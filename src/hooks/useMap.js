@@ -1,5 +1,5 @@
 // React Hooks
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // OpenLayer components
 import Map from "ol/Map";
@@ -8,22 +8,32 @@ import TileLayer from "ol/layer/Tile";
 import { fromLonLat } from "ol/proj";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { Fill, Stroke, Style } from "ol/style";
 import { GeoJSON } from "ol/format";
-
-// OpenLayer Sources
 import { TileWMS } from "ol/source";
 
+// Constants
+import {
+  defaultMunicipalityStyle,
+  selectedMunicipalityStyle,
+} from "../constants/mapStyles";
+
+// Data
 import geoJSONData from "../data/map_municipalities.geojson";
+import names from "../data/municipality_names.json";
 
 export function useMap() {
-  const [toolTip, setToolTip] = useState(null);
+  const [selected, setSelected] = useState(null);
   const [selectedFeature, setSelectedFeature] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
   const currentView = useRef(null);
   const originalExtent = useRef(null);
+  const dataLayerRef = useRef(null);
 
   const searchMunicipality = ({ byName }) => {
-    console.log(byName);
+    const results = names.filter((name) =>
+      name.toLowerCase().includes(byName.toLowerCase())
+    );
+    setSearchResults(results);
   };
 
   const clearFeature = () => {
@@ -33,35 +43,25 @@ export function useMap() {
     });
   };
 
-  const selectedMunicipalityStyle = useMemo(() => {
-    return new Style({
-      stroke: new Stroke({
-        color: "grey",
-        width: 2,
-      }),
-      fill: new Fill({
-        color: "rgba(0, 0, 255, 0.2)",
-      }),
-    });
-  }, []);
-
-  const defaultMunicipalityStyle = useMemo(() => {
-    return new Style({
-      stroke: new Stroke({
-        color: "grey",
-        width: 2,
-      }),
-      fill: new Fill({
-        color: "rgba(0, 0, 0, 0.2)",
-      }),
-    });
-  }, []);
+  const updateSelected = (name) => {
+    if (dataLayerRef.current) {
+      const features = dataLayerRef.current.getSource().getFeatures();
+      const feature = features.find((feat) => feat.get("NAMEUNIT") === name);
+      if (feature) {
+        setSelectedFeature((prev) => {
+          prev?.setStyle(defaultMunicipalityStyle);
+          return feature;
+        });
+      }
+    }
+    setSelected(name);
+  };
 
   useEffect(() => {
     if (selectedFeature) {
       selectedFeature.setStyle(selectedMunicipalityStyle);
       const muncipalityName = selectedFeature.get("NAMEUNIT");
-      setToolTip(muncipalityName);
+      setSelected(muncipalityName);
 
       if (!currentView) return;
 
@@ -70,7 +70,7 @@ export function useMap() {
         padding: [50, 50, 50, 400],
       });
     } else {
-      setToolTip(null);
+      setSelected(null);
 
       if (currentView.current && originalExtent.current) {
         currentView.current.fit(originalExtent.current, {
@@ -79,12 +79,7 @@ export function useMap() {
         });
       }
     }
-  }, [
-    selectedFeature,
-    defaultMunicipalityStyle,
-    selectedMunicipalityStyle,
-    currentView,
-  ]);
+  }, [selectedFeature, currentView]);
 
   useEffect(() => {
     const map = new Map({
@@ -122,14 +117,14 @@ export function useMap() {
     originalExtent.current = map.getView().calculateExtent(map.getSize());
 
     // Load the GeoJSON layer with the border vectors
-    const muncipalityLayer = new VectorLayer({
+    dataLayerRef.current = new VectorLayer({
       source: new VectorSource({
         url: geoJSONData,
         format: new GeoJSON(),
       }),
       style: defaultMunicipalityStyle,
     });
-    map.addLayer(muncipalityLayer);
+    map.addLayer(dataLayerRef.current);
 
     // Add tooltip interaction
     map.on("singleclick", function (event) {
@@ -155,7 +150,13 @@ export function useMap() {
     });
 
     return () => map.setTarget(null);
-  }, [defaultMunicipalityStyle]);
+  }, []);
 
-  return { toolTip, searchMunicipality, clearFeature };
+  return {
+    selected,
+    updateSelected,
+    searchMunicipality,
+    clearFeature,
+    searchResults,
+  };
 }
