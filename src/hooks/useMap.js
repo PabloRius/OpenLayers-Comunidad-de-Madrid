@@ -67,7 +67,7 @@ export function useMap() {
 
       currentView.current.fit(selectedFeature.getGeometry().getExtent(), {
         duration: 500,
-        padding: [50, 50, 50, 50],
+        padding: [50, 50, 50, 400],
       });
     } else {
       setToolTip(null);
@@ -96,12 +96,12 @@ export function useMap() {
       url: "https://www.ign.es/wms-inspire/ign-base",
       params: { LAYERS: "IGNBaseTodo", Tiled: true },
       serverType: "geoserver",
-      transition: 0,
+      transition: 150,
     });
 
     const layer = new TileLayer({
       source,
-      preload: Infinity,
+      preload: 2,
     });
     map.addLayer(layer);
 
