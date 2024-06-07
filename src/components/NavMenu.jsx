@@ -5,11 +5,16 @@ import { FloatingMenu } from "./FloatingMenu";
 import "./NavMenu.css";
 import { useState } from "react";
 
-export function NavMenu({ toolTip, searchMunicipality }) {
+export function NavMenu({ toolTip, searchMunicipality, clearFeature }) {
   const [enableMenu, setEnableMenu] = useState(false);
 
   const handleMenuToggle = () => {
-    setEnableMenu((prev) => !prev);
+    setEnableMenu((prev) => {
+      if (prev === true) {
+        clearFeature();
+      }
+      return !prev;
+    });
   };
 
   return (

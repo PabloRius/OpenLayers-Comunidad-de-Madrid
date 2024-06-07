@@ -20,9 +20,17 @@ export function useMap() {
   const [toolTip, setToolTip] = useState(null);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const currentView = useRef(null);
+  const originalExtent = useRef(null);
 
   const searchMunicipality = ({ byName }) => {
     console.log(byName);
+  };
+
+  const clearFeature = () => {
+    setSelectedFeature((prev) => {
+      prev?.setStyle(defaultMunicipalityStyle);
+      return null;
+    });
   };
 
   const selectedMunicipalityStyle = useMemo(() => {
@@ -63,6 +71,13 @@ export function useMap() {
       });
     } else {
       setToolTip(null);
+
+      if (currentView.current && originalExtent.current) {
+        currentView.current.fit(originalExtent.current, {
+          duration: 500,
+          padding: [50, 50, 50, 50],
+        });
+      }
     }
   }, [
     selectedFeature,
@@ -90,17 +105,21 @@ export function useMap() {
     });
     map.addLayer(layer);
 
-    const madridCenter = fromLonLat([-3.70379, 40.41678]);
+    const madridCenter = fromLonLat([-3.862, 40.5432]);
 
     map.setView(
       new View({
         center: madridCenter,
         zoom: 9,
         minZoom: 9,
+        extent: fromLonLat([-5.8113, 39.5783]).concat(
+          fromLonLat([-1.8779, 41.3421])
+        ),
       })
     );
 
     currentView.current = map.getView();
+    originalExtent.current = map.getView().calculateExtent(map.getSize());
 
     // Load the GeoJSON layer with the border vectors
     const muncipalityLayer = new VectorLayer({
@@ -124,10 +143,7 @@ export function useMap() {
           return feature;
         });
       } else {
-        setSelectedFeature((prev) => {
-          prev?.setStyle(defaultMunicipalityStyle);
-          return null;
-        });
+        clearFeature();
       }
     });
 
@@ -141,5 +157,5 @@ export function useMap() {
     return () => map.setTarget(null);
   }, [defaultMunicipalityStyle]);
 
-  return { toolTip, searchMunicipality };
+  return { toolTip, searchMunicipality, clearFeature };
 }

@@ -9,7 +9,7 @@ import { NavMenu } from "./components/NavMenu";
 import { useMap } from "./hooks/useMap";
 
 function App() {
-  const { toolTip, searchMunicipality } = useMap();
+  const { toolTip, searchMunicipality, clearFeature } = useMap();
 
   return (
     <>
@@ -24,7 +24,11 @@ function App() {
           left: 0,
         }}
       />
-      <NavMenu toolTip={toolTip} searchMunicipality={searchMunicipality} />
+      <NavMenu
+        toolTip={toolTip}
+        searchMunicipality={searchMunicipality}
+        clearFeature={clearFeature}
+      />
     </>
   );
 }
