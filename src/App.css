@@ -9,4 +9,6 @@
 .ol-zoom {
   right: 0.5em;
   left: unset;
+  bottom: 0.5em;
+  top: unset;
 }

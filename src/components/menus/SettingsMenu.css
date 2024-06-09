@@ -1,0 +1,44 @@
+.SettingsMenu {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  margin: 0;
+  padding: 0;
+  background-color: whitesmoke;
+
+  display: flex;
+  flex-direction: row;
+
+  box-shadow: 3.2px 8px 2.4px rgba(0, 0, 0, 0.008),
+    6.3px 16px 5.9px rgba(0, 0, 0, 0.017),
+    9.4px 23.8px 11px rgba(0, 0, 0, 0.025),
+    12.6px 31.8px 19.7px rgba(0, 0, 0, 0.033),
+    15.8px 39.9px 36.8px rgba(0, 0, 0, 0.041),
+    19px 48px 88px rgba(0, 0, 0, 0.05);
+  border-radius: 25px;
+
+  button {
+    position: relative;
+    top: 1px;
+    height: 48px;
+    right: auto;
+
+    &:last-of-type {
+      z-index: 100;
+    }
+  }
+}
+
+.expandedMenu {
+  width: 48px;
+
+  /* transform: scaleX(1); */
+  transition: width 0.5s, opacity 0.5s;
+
+  &.hidden {
+    /* transform: scaleX(0); */
+    width: 0;
+    transition: width 0.5s;
+    opacity: 0;
+  }
+}

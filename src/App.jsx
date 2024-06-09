@@ -3,23 +3,24 @@ import "ol/ol.css";
 import "./App.css";
 
 // Custom Components
-import { NavMenu } from "./components/NavMenu";
+import { NavMenu } from "./components/menus/NavMenu";
 
 // Custom Hooks
 import { useMap } from "./hooks/useMap";
+import { SettingsMenu } from "./components/menus/SettingsMenu";
 
 function App() {
   const {
     searchMunicipality,
-    clearFeature,
     searchResults,
     selected,
     updateSelected,
+    settings,
+    toggleShowGroupLayers,
   } = useMap();
 
   return (
     <>
-      <h1 className="pageTitle">OpenLayer App</h1>
       <div
         id="map"
         style={{
@@ -32,10 +33,13 @@ function App() {
       />
       <NavMenu
         searchMunicipality={searchMunicipality}
-        clearFeature={clearFeature}
         searchResults={searchResults}
         selected={selected}
         updateSelected={updateSelected}
+      />
+      <SettingsMenu
+        toggleShowGroupLayers={toggleShowGroupLayers}
+        settings={settings}
       />
     </>
   );

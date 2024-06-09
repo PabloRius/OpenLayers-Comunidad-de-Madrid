@@ -10,21 +10,28 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { GeoJSON } from "ol/format";
 import { TileWMS } from "ol/source";
+// import { Fill, Stroke, Style } from "ol/style";
 
 // Constants
 import {
   defaultMunicipalityStyle,
+  layer_1MunicipalityStyle,
+  layer_2MunicipalityStyle,
+  layer_3MunicipalityStyle,
+  layer_MadridMunicipalityStyle,
   selectedMunicipalityStyle,
 } from "../constants/mapStyles";
 
 // Data
 import geoJSONData from "../data/map_municipalities.geojson";
 import names from "../data/municipality_names.json";
+import layers from "../data/municipality_group.json";
 
 export function useMap() {
   const [selected, setSelected] = useState(null);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
+  const [settings, updateSettings] = useState({ showGroupLayers: false });
   const currentView = useRef(null);
   const originalExtent = useRef(null);
   const dataLayerRef = useRef(null);
@@ -40,26 +47,87 @@ export function useMap() {
     }
   };
 
-  const clearFeature = () => {
-    setSelectedFeature((prev) => {
-      prev?.setStyle(defaultMunicipalityStyle);
-      return null;
-    });
+  const updateSelected = (name) => {
+    if (name) {
+      if (dataLayerRef.current) {
+        const features = dataLayerRef.current.getSource().getFeatures();
+        const feature = features.find((feat) => feat.get("NAMEUNIT") === name);
+        if (feature) {
+          setSelectedFeature((prev) => {
+            if (prev && settings.showGroupLayers) {
+              const munic_name = prev.get("NAMEUNIT");
+              const group = layers[munic_name];
+              const style =
+                group === 3
+                  ? defaultMunicipalityStyle
+                  : group === 0
+                  ? layer_1MunicipalityStyle
+                  : group === 1
+                  ? layer_2MunicipalityStyle
+                  : group === 2
+                  ? layer_3MunicipalityStyle
+                  : layer_MadridMunicipalityStyle;
+              prev.setStyle(style);
+            } else prev?.setStyle(defaultMunicipalityStyle);
+            return feature;
+          });
+        }
+      }
+      setSelected(name);
+    } else {
+      setSelectedFeature((prev) => {
+        if (prev && settings.showGroupLayers) {
+          const munic_name = prev.get("NAMEUNIT");
+          const group = layers[munic_name];
+          const style =
+            group === 3
+              ? defaultMunicipalityStyle
+              : group === 0
+              ? layer_1MunicipalityStyle
+              : group === 1
+              ? layer_2MunicipalityStyle
+              : group === 2
+              ? layer_3MunicipalityStyle
+              : layer_MadridMunicipalityStyle;
+          prev.setStyle(style);
+        } else prev?.setStyle(defaultMunicipalityStyle);
+        return null;
+      });
+    }
   };
 
-  const updateSelected = (name) => {
-    console.log(name);
-    if (dataLayerRef.current) {
-      const features = dataLayerRef.current.getSource().getFeatures();
-      const feature = features.find((feat) => feat.get("NAMEUNIT") === name);
-      if (feature) {
-        setSelectedFeature((prev) => {
-          prev?.setStyle(defaultMunicipalityStyle);
-          return feature;
+  const toggleShowGroupLayers = () => {
+    updateSettings((prev) => {
+      const features = dataLayerRef.current?.getSource().getFeatures();
+      if (prev.showGroupLayers === false && features) {
+        features.forEach((feature) => {
+          const munic_name = feature.get("NAMEUNIT");
+          const group = layers[munic_name];
+          const style =
+            group === 3
+              ? defaultMunicipalityStyle
+              : group === 0
+              ? layer_1MunicipalityStyle
+              : group === 1
+              ? layer_2MunicipalityStyle
+              : group === 2
+              ? layer_3MunicipalityStyle
+              : layer_MadridMunicipalityStyle;
+          feature.setStyle(style);
+        });
+      } else if (prev.showGroupLayers === true && features) {
+        features.forEach((feature) => {
+          if (feature.get("NAMEUNIT") === selected)
+            feature.setStyle(selectedMunicipalityStyle);
+          else feature.setStyle(defaultMunicipalityStyle);
         });
       }
-    }
-    setSelected(name);
+      return {
+        ...prev,
+        showGroupLayers: !prev.showGroupLayers,
+      };
+    });
+    console.log("Toggling show layers");
   };
 
   useEffect(() => {
@@ -143,7 +211,7 @@ export function useMap() {
           return feature;
         });
       } else {
-        clearFeature();
+        updateSelected(null);
       }
     });
 
@@ -161,7 +229,8 @@ export function useMap() {
     selected,
     updateSelected,
     searchMunicipality,
-    clearFeature,
     searchResults,
+    toggleShowGroupLayers,
+    settings,
   };
 }
