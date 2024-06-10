@@ -1,0 +1,24 @@
+.Loader {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+
+  background-image: url(/Spinner.gif);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  image-rendering: crisp-edges;
+
+  z-index: 200;
+
+  p {
+    position: relative;
+    text-align: center;
+    top: 55%;
+    font-size: 2rem;
+    font-weight: 500;
+  }
+}
+/* Try tweaking Edge Smoothing and Alpha Clamping options */
