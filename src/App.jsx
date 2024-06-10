@@ -6,18 +6,15 @@ import "./App.css";
 import { NavMenu } from "./components/menus/NavMenu";
 
 // Custom Hooks
-import { useMap } from "./hooks/useMap";
 import { SettingsMenu } from "./components/menus/SettingsMenu";
+import { useMapNew } from "./hooks/useMapNew";
+import { Loader } from "./components/accessibility/Loader";
+import { useData } from "./hooks/useData";
 
 function App() {
-  const {
-    searchMunicipality,
-    searchResults,
-    selected,
-    updateSelected,
-    settings,
-    toggleShowGroupLayers,
-  } = useMap();
+  const { selected, updateSelected, settings, toggleShowGroupLayers } =
+    useMapNew();
+  const { data, loading } = useData({ municipality: selected, year: "2014" });
 
   return (
     <>
@@ -32,15 +29,15 @@ function App() {
         }}
       />
       <NavMenu
-        searchMunicipality={searchMunicipality}
-        searchResults={searchResults}
         selected={selected}
         updateSelected={updateSelected}
+        data={data}
       />
       <SettingsMenu
         toggleShowGroupLayers={toggleShowGroupLayers}
         settings={settings}
       />
+      <Loader loading={loading} />
     </>
   );
 }
