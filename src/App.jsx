@@ -10,11 +10,18 @@ import { SettingsMenu } from "./components/menus/SettingsMenu";
 import { useMapNew } from "./hooks/useMapNew";
 import { Loader } from "./components/accessibility/Loader";
 import { useData } from "./hooks/useData";
+import { useEnv } from "./hooks/useEnv";
+import { useEffect } from "react";
 
 function App() {
   const { selected, updateSelected, settings, toggleShowGroupLayers } =
     useMapNew();
   const { data, loading } = useData({ municipality: selected, year: "2014" });
+  const { env } = useEnv();
+
+  useEffect(() => {
+    console.log(env);
+  }, [env]);
 
   return (
     <>
