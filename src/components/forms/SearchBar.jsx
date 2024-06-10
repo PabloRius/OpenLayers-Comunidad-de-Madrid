@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   IconButton,
   List,
@@ -15,23 +15,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import { parseSearch } from "../../services/search";
 import { useSearch } from "../../hooks/useSearch";
 import "./SearchBar.css";
+import { useMapSearch } from "../../hooks/useMapSearch";
 
-export function SearchBar({
-  searchMunicipality,
-  searchResults,
-  selected,
-  updateSelected,
-}) {
-  const { search, updateSearch, error } = useSearch();
+export function SearchBar({ selected, updateSelected }) {
   const [showResults, setShowResults] = useState(false);
+  const { search, updateSearch, error } = useSearch();
+  const { searchMunicipality, searchResults } = useMapSearch();
   const inputRef = useRef(null);
 
-  const debouncedSearchMunicipalities = useCallback(
-    debounce((search) => {
-      searchMunicipality({ byName: search });
-    }, 300),
-    [searchMunicipality]
-  );
+  const debouncedSearchMunicipalities = debounce((search) => {
+    searchMunicipality({ byName: search });
+  }, 300);
 
   const handleSelect = (name) => {
     console.log(selected, name);

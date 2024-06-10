@@ -5,12 +5,7 @@ import { FloatingMenu } from "./FloatingMenu";
 import "./NavMenu.css";
 import { useState } from "react";
 
-export function NavMenu({
-  searchMunicipality,
-  searchResults,
-  selected,
-  updateSelected,
-}) {
+export function NavMenu({ selected, updateSelected }) {
   const [enableMenu, setEnableMenu] = useState(false);
 
   const handleMenuToggle = () => {
@@ -29,12 +24,7 @@ export function NavMenu({
         toggleEnabled={handleMenuToggle}
         selected={selected}
       />
-      <SearchBar
-        searchMunicipality={searchMunicipality}
-        searchResults={searchResults}
-        selected={selected}
-        updateSelected={updateSelected}
-      />
+      <SearchBar selected={selected} updateSelected={updateSelected} />
     </nav>
   );
 }
