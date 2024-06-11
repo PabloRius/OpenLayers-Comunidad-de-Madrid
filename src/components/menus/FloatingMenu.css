@@ -23,6 +23,9 @@
   min-width: 300px;
   border-radius: 15px;
 
+  display: flex;
+  flex-direction: column;
+
   header {
     position: relative;
 

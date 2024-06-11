@@ -1,26 +1,14 @@
 /* eslint-disable react/prop-types */
-import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
-import OpenInFullIcon from "@mui/icons-material/OpenInFull";
+import CloseIcon from "@mui/icons-material/Close";
 
 import "./FloatingMenu.css";
 import { IconButton } from "@mui/material";
-import { useEffect } from "react";
+import { DataRenderer } from "../renderers/DataRenderer";
 
-function useMenuData({ selected, enabled, toggleEnabled }) {
-  useEffect(() => {
-    if (selected && !enabled) {
-      toggleEnabled();
-    } else if (!selected && enabled) {
-      toggleEnabled();
-    }
-  }, [selected]);
-}
-
-export function FloatingMenu({ enabled, toggleEnabled, selected }) {
-  useMenuData({ selected, enabled, toggleEnabled });
+export function FloatingMenu({ enabled, toggleEnabled, selected, data }) {
   return (
     <>
-      {enabled ? (
+      {enabled && (
         <section className="FloatingMenu">
           <header>
             <h2>Floating Menu</h2>
@@ -29,20 +17,16 @@ export function FloatingMenu({ enabled, toggleEnabled, selected }) {
               className="CloseButton"
               onClick={toggleEnabled}
             >
-              <CloseFullscreenIcon />
+              <CloseIcon />
             </IconButton>
           </header>
-          {selected ? <p>{selected}</p> : <></>}
-        </section>
-      ) : (
-        <section className="FloatingMenuOpen">
-          <IconButton
-            size="large"
-            className="OpenButton"
-            onClick={toggleEnabled}
-          >
-            <OpenInFullIcon />
-          </IconButton>
+          {selected ? (
+            <main>
+              <DataRenderer data={data} />
+            </main>
+          ) : (
+            <></>
+          )}
         </section>
       )}
     </>
