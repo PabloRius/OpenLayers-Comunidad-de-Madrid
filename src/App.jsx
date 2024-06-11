@@ -14,7 +14,7 @@ import { useData } from "./hooks/useData";
 function App() {
   const { selected, updateSelected, settings, toggleShowGroupLayers } =
     useMapNew();
-  const { data, loading } = useData({ municipality: selected, year: "2014" });
+  const { data, loading } = useData({ municipality: selected, year: "2021" });
 
   return (
     <>
