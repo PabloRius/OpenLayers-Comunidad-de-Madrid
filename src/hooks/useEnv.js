@@ -4,10 +4,9 @@ export function useEnv() {
   const [environment, setEnvironment] = useState("dev");
 
   useEffect(() => {
-    console.log(import.meta.env.PROD);
-    const env = import.meta.env.VITE_ENV;
-    if (env) {
-      setEnvironment(env);
+    const prod = import.meta.env.PROD;
+    if (prod) {
+      setEnvironment("prod");
     }
   }, []);
 
