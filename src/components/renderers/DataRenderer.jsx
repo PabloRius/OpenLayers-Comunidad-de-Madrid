@@ -17,6 +17,36 @@ export function DataRenderer({ data }) {
               />
             </>
           )}
+          {data[0]["Índice de Calidad del Empleo"] && (
+            <>
+              <h4>Índice de Calidad del Empleo</h4>
+              <BarChart
+                pctg={
+                  parseFloat(data[0]["Índice de Calidad del Empleo"]) || null
+                }
+              />
+            </>
+          )}
+          {data[0]["Índice de Diversidad Económica"] && (
+            <>
+              <h4>Índice de Diversidad Económica</h4>
+              <BarChart
+                pctg={
+                  parseFloat(data[0]["Índice de Diversidad Económica"]) || null
+                }
+              />
+            </>
+          )}
+          {data[0]["Índice de Igualdad Económica"] && (
+            <>
+              <h4>Índice de Igualdad Económica</h4>
+              <BarChart
+                pctg={
+                  parseFloat(data[0]["Índice de Igualdad Económica"]) || null
+                }
+              />
+            </>
+          )}
         </>
       )}
     </section>
