@@ -1,64 +1,48 @@
 /* eslint-disable react/prop-types */
+import { useIndex } from "../../hooks/useIndex";
+import { useMunicipalityData } from "../../hooks/useMunicipalityData";
 import { BarChart } from "./BarChart";
 
 import "./DataRenderer.css";
 
 export function DataRenderer({ data }) {
-  return data && data.length > 0 ? (
+  const { indexInfo } = useIndex();
+  const { municipalityData } = useMunicipalityData();
+  let label = Object.keys(data)[0];
+  if (!label) return <p>Loading data...</p>;
+
+  let municipality = label.split("_")[0];
+
+  let values = data[label];
+  if (values.length <= 0) return <p>No data found {}</p>;
+
+  return (
     <section className="dataSection">
-      {data[0]["municipio_nombre"] && data[0]["municipio_nombre"] !== "" && (
-        <>
-          <h3>{data[0]["municipio_nombre"]}</h3>
-          {data[0]["Índice de Capital Humano"] && (
-            <>
-              <h4>Índice de Capital humano</h4>
-              <BarChart
-                pctg={parseFloat(data[0]["Índice de Capital Humano"]) || null}
-              />
-            </>
-          )}
-          {data[0]["Índice de Calidad del Empleo"] && (
-            <>
-              <h4>Índice de Calidad del Empleo</h4>
-              <BarChart
-                pctg={
-                  parseFloat(data[0]["Índice de Calidad del Empleo"]) || null
-                }
-              />
-            </>
-          )}
-          {data[0]["Índice de Diversidad Económica"] && (
-            <>
-              <h4>Índice de Diversidad Económica</h4>
-              <BarChart
-                pctg={
-                  parseFloat(data[0]["Índice de Diversidad Económica"]) || null
-                }
-              />
-            </>
-          )}
-          {data[0]["Índice de Igualdad Económica"] && (
-            <>
-              <h4>Índice de Igualdad Económica</h4>
-              <BarChart
-                pctg={
-                  parseFloat(data[0]["Índice de Igualdad Económica"]) || null
-                }
-              />
-            </>
-          )}
-        </>
+      {municipalityData &&
+      municipalityData[municipality] &&
+      municipalityData[municipality].name ? (
+        <h3>{municipalityData[municipality].name}</h3>
+      ) : (
+        <h3>Error fetching the municipality name</h3>
       )}
+      {Object.keys(values).map((indicator) => {
+        return (
+          <>
+            {indexInfo &&
+            indexInfo[indicator] &&
+            indexInfo[indicator].Nombre_Variable ? (
+              <h4>{indexInfo[indicator].Nombre_Variable}</h4>
+            ) : null}
+
+            {indexInfo &&
+            indexInfo[indicator] &&
+            indexInfo[indicator].Tipo &&
+            indexInfo[indicator].Tipo === "Indice" ? (
+              <BarChart pctg={parseFloat(values[indicator]) || null} />
+            ) : null}
+          </>
+        );
+      })}
     </section>
-  ) : !data ? (
-    <>
-      <p>Loading data...</p>
-    </>
-  ) : data.length === 0 ? (
-    <>
-      <p>No data found {}</p>
-    </>
-  ) : (
-    <></>
   );
 }

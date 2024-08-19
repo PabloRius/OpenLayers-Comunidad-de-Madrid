@@ -12,9 +12,14 @@ import { Loader } from "./components/accessibility/Loader";
 import { useData } from "./hooks/useData";
 
 function App() {
-  const { selected, updateSelected, settings, toggleShowGroupLayers } =
-    useMapNew();
-  const { data, loading } = useData({ municipality: selected, year: "2021" });
+  const {
+    selected,
+    updateSelected,
+    settings,
+    toggleShowGroupLayers,
+    toggleShowFilter,
+  } = useMapNew();
+  const { data, loading } = useData({ municipality: selected, year: "2015" });
 
   return (
     <>
@@ -35,6 +40,7 @@ function App() {
       />
       <SettingsMenu
         toggleShowGroupLayers={toggleShowGroupLayers}
+        toggleShowFilter={toggleShowFilter}
         settings={settings}
       />
       <Loader loading={loading} />

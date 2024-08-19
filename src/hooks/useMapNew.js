@@ -19,11 +19,15 @@ import {
   selectedMunicipalityStyle,
 } from "../constants/mapStyles";
 
-import geoJSONData from "../data/map_municipalities.geojson";
-import layers from "../data/municipality_group.json";
+import geoJSONData from "../data/map_municipalities_v2.geojson";
+// import geoJSONData from "../data/map_municipalities.geojson";
+import { useMunicipalityData } from "./useMunicipalityData";
 
 export function useMapNew() {
-  const [settings, updateSettings] = useState({ showGroupLayers: false });
+  const [settings, updateSettings] = useState({
+    showGroupLayers: false,
+    filter: { active: false, groups: [] },
+  });
   const [features, setFeatures] = useState([]);
   const mapRef = useRef(null);
   const currentView = useRef(null);
@@ -34,14 +38,27 @@ export function useMapNew() {
     features,
     settings,
   });
+  const { municipalityData } = useMunicipalityData();
+
+  const toggleShowFilter = () => {
+    updateSettings((prev) => {
+      return {
+        ...prev,
+        filter: {
+          active: !prev.filter.active,
+        },
+      };
+    });
+  };
 
   const toggleShowGroupLayers = () => {
     const features = dataLayerRef.current?.getSource().getFeatures();
     if (!features) return;
     if (!settings.showGroupLayers) {
       features.forEach((feature) => {
-        const munic_name = feature.get("NAMEUNIT");
-        const group = layers[munic_name];
+        const munic_name = feature.get("lau_id");
+        const group = municipalityData[munic_name].grupo;
+        console.log(group);
         let style;
         if (munic_name === selected) style = selectedMunicipalityStyle;
         else {
@@ -60,7 +77,7 @@ export function useMapNew() {
       });
     } else {
       features.forEach((feature) => {
-        const munic_name = feature.get("NAMEUNIT");
+        const munic_name = feature.get("lau_id");
         let style;
         if (munic_name === selected) style = selectedMunicipalityStyle;
         else style = defaultMunicipalityStyle;
@@ -161,12 +178,18 @@ export function useMapNew() {
       );
 
       if (feature) {
-        updateSelected(feature.get("NAMEUNIT"));
+        updateSelected(feature.get("lau_id"));
       } else {
         updateSelected(null);
       }
     });
   }, [updateSelected]);
 
-  return { toggleShowGroupLayers, settings, selected, updateSelected };
+  return {
+    toggleShowGroupLayers,
+    toggleShowFilter,
+    settings,
+    selected,
+    updateSelected,
+  };
 }

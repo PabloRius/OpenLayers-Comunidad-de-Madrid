@@ -16,11 +16,13 @@ import { parseSearch } from "../../services/search";
 import { useSearch } from "../../hooks/useSearch";
 import "./SearchBar.css";
 import { useMapSearch } from "../../hooks/useMapSearch";
+import { useMunicipalityData } from "../../hooks/useMunicipalityData";
 
 export function SearchBar({ selected, updateSelected }) {
   const [showResults, setShowResults] = useState(false);
   const { search, updateSearch, error } = useSearch();
   const { searchMunicipality, searchResults } = useMapSearch();
+  const { municipalityData } = useMunicipalityData();
   const inputRef = useRef(null);
 
   const debouncedSearchMunicipalities = debounce((search) => {
@@ -29,8 +31,11 @@ export function SearchBar({ selected, updateSelected }) {
 
   const handleSelect = (name) => {
     console.log(selected, name);
-    if (selected !== name) {
-      updateSelected(name);
+    const id = Object.keys(municipalityData).find(
+      (lau_id) => municipalityData[lau_id].name === name
+    );
+    if (selected !== id) {
+      updateSelected(id);
       setShowResults(false);
     }
   };

@@ -4,6 +4,7 @@ import { IconButton, Tooltip } from "@mui/material";
 
 import SettingsIcon from "@mui/icons-material/Settings";
 import LayersIcon from "@mui/icons-material/Layers";
+import FilterIcon from "@mui/icons-material/FilterList";
 
 import "./SettingsMenu.css";
 
@@ -21,7 +22,11 @@ const ExpandableIconButton = ({ icon, toolTip, activated, toggle }) => {
   );
 };
 
-export function SettingsMenu({ toggleShowGroupLayers, settings }) {
+export function SettingsMenu({
+  toggleShowGroupLayers,
+  toggleShowFilter,
+  settings,
+}) {
   const [menuOpen, setMenuOpen] = useState(true);
 
   const toggleMenu = () => {
@@ -32,8 +37,20 @@ export function SettingsMenu({ toggleShowGroupLayers, settings }) {
     toggleShowGroupLayers();
   };
 
+  const toggleFilter = () => {
+    toggleShowFilter();
+  };
+
   return (
     <menu className="SettingsMenu">
+      <div className={`expandedMenu ${menuOpen ? "hidden" : ""}`}>
+        <ExpandableIconButton
+          icon={<FilterIcon />}
+          toolTip={"Show groups"}
+          activated={settings.filter.active}
+          toggle={toggleFilter}
+        />
+      </div>
       <div className={`expandedMenu ${menuOpen ? "hidden" : ""}`}>
         <ExpandableIconButton
           icon={<LayersIcon />}

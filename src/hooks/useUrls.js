@@ -5,8 +5,9 @@ export function useUrls() {
 
   const api_url =
     environment === "dev"
-      ? "http://localhost:5000/api/v0.0.1/mongodata"
-      : `https://openlayers-comunidad-de-madrid-backend.onrender.com/api/v0.0.1/mongodata`;
+      ? "http://localhost:5000/api/v0.0.2/local"
+      : // ? "http://localhost:5000/api/v0.0.1/mongodata"
+        `https://openlayers-comunidad-de-madrid-backend.onrender.com/api/v0.0.1/mongodata`;
 
   return { api_url };
 }

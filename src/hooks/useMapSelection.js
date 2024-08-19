@@ -7,19 +7,20 @@ import {
   layer_MadridMunicipalityStyle,
   selectedMunicipalityStyle,
 } from "../constants/mapStyles";
-
-import layers from "../data/municipality_group.json";
+import { useMunicipalityData } from "./useMunicipalityData";
 
 export function useMapSelection({ features, settings }) {
   const [selected, setSelected] = useState(null);
   const [selectedFeature, setSelectedFeature] = useState(null);
 
+  const { municipalityData } = useMunicipalityData();
+
   const updateSelected = useCallback(
     (name) => {
       // Reset previously selected feature (if any)
       if (selectedFeature && settings.showGroupLayers) {
-        const munic_name = selectedFeature.get("NAMEUNIT");
-        const group = layers[munic_name];
+        const lau_id = selectedFeature.get("lau_id");
+        const group = municipalityData[lau_id];
         const style =
           group === 3
             ? defaultMunicipalityStyle
@@ -34,7 +35,7 @@ export function useMapSelection({ features, settings }) {
       } else selectedFeature?.setStyle(defaultMunicipalityStyle);
       // Set new selected feature (if exists and is different from the previous)
       if (!features || features.length === 0) return;
-      const feature = features.find((feat) => feat.get("NAMEUNIT") === name);
+      const feature = features.find((feat) => feat.get("lau_id") === name);
       if (name && selected !== name && feature) {
         setSelectedFeature(feature);
         feature.setStyle(selectedMunicipalityStyle);
@@ -44,7 +45,7 @@ export function useMapSelection({ features, settings }) {
         setSelected(null);
       }
     },
-    [settings, selected, selectedFeature, features]
+    [settings, selected, selectedFeature, features, municipalityData]
   );
 
   return { selected, selectedFeature, updateSelected };
