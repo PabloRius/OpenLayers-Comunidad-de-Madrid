@@ -23,6 +23,9 @@
   min-width: 300px;
   border-radius: 15px;
 
+  overflow-y: auto;
+  scrollbar-width: thin;
+
   display: flex;
   flex-direction: column;
 

@@ -1,22 +1,22 @@
-Variable,Tipo
+Variable,Tipo,Depende
 
-2.300,Valor
-2.301,Indice
+2.301,Indice,
+2.300,Valor,2.301
 
-2.302,Indice
-2.303,Indice
-2.304,Indice
-2.305,Valor
+2.302,Indice,
+2.303,Valor,2.302
+2.304,Valor,2.302
+2.305,Valor,2.302
 
-2.306,Indice
-2.307,Indice
-2.308,Indice
-2.309,Valor
+2.306,Indice,
+2.307,Valor,2.306
+2.308,Valor,2.306
+2.309,Valor,2.306
 
-2.310,Indice
-2.311,Indice
-2.312,Indice
+2.310,Indice,
+2.311,Valor,2.310
+2.312,Valor,2.310
 
-2.313,Indice
-2.314,Valor
-2.315,Valor
+2.313,Indice,
+2.314,Valor,2.313
+2.315,Valor,2.313

@@ -3,8 +3,9 @@ import { Tooltip } from "@mui/material";
 /* eslint-disable react/prop-types */
 export function BarChart({ pctg }) {
   if (!pctg) return;
+  const full = (pctg - 0.5) / 0.5;
   return (
-    <Tooltip title={`Value: ${pctg * 100}`}>
+    <Tooltip title={`Value: ${Math.round(full * 100)}`}>
       <div
         style={{
           width: "100%",
@@ -15,11 +16,11 @@ export function BarChart({ pctg }) {
       >
         <div
           style={{
-            width: `${pctg * 100}%`,
+            width: `${full * 100}%`,
             backgroundColor:
-              pctg < 0.2
+              full < 0.5
                 ? "red"
-                : pctg >= 0.2 && pctg < 0.55
+                : full >= 0.5 && full < 0.7
                 ? "orange"
                 : "green",
             height: "100%",

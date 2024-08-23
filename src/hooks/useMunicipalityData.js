@@ -34,8 +34,6 @@ export function useMunicipalityData() {
           normalizedGroupData[normalizedKey] = groupData[key];
         }
 
-        console.log(`Normalized: ${normalizedGroupData}`);
-
         const hashMap = parsedCsvData.reduce((acc, item) => {
           const name = item.lau_name;
           const lau_id = item.lau_id;
@@ -46,7 +44,7 @@ export function useMunicipalityData() {
               grupo: normalizedGroupData[name],
             };
           } else {
-            console.error(`Name not found: ${name}`);
+            if (name) console.error(`Name not found: ${name}`);
           }
 
           return acc;

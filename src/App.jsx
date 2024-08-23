@@ -10,8 +10,11 @@ import { SettingsMenu } from "./components/menus/SettingsMenu";
 import { useMapNew } from "./hooks/useMapNew";
 import { Loader } from "./components/accessibility/Loader";
 import { useData } from "./hooks/useData";
+import { YearSelector } from "./components/menus/YearSelector";
+import { useState } from "react";
 
 function App() {
+  const [year, setYear] = useState(2021);
   const {
     selected,
     updateSelected,
@@ -19,7 +22,7 @@ function App() {
     toggleShowGroupLayers,
     toggleShowFilter,
   } = useMapNew();
-  const { data, loading } = useData({ municipality: selected, year: "2015" });
+  const { data, loading } = useData({ municipality: selected });
 
   return (
     <>
@@ -34,15 +37,17 @@ function App() {
         }}
       />
       <NavMenu
-        selected={selected}
+        selected={year}
         updateSelected={updateSelected}
         data={data}
+        year={year}
       />
       <SettingsMenu
         toggleShowGroupLayers={toggleShowGroupLayers}
         toggleShowFilter={toggleShowFilter}
         settings={settings}
       />
+      <YearSelector selected={year} changeSelected={setYear} />
       <Loader loading={loading} />
     </>
   );

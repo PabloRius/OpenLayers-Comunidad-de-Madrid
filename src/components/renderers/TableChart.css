@@ -1,0 +1,42 @@
+.parent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  row-gap: 10px;
+}
+
+.tableRow {
+  display: flex;
+  flex-direction: row;
+  font-size: 12px;
+  &:not(:last-child) {
+    border-bottom: 1px solid black;
+  }
+
+  > .cell {
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    &:first-child {
+      width: 35%;
+    }
+    &:nth-child(2) {
+      width: 35%;
+    }
+    &:last-child {
+      width: 30%;
+    }
+    &:not(:last-child) {
+      border-right: 1px solid black;
+    }
+    &:not(:first-child) {
+      justify-content: center;
+    }
+  }
+}
+
+.tableColumn {
+  display: flex;
+  flex-direction: column;
+}

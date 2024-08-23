@@ -179,6 +179,7 @@ export function useMapNew() {
 
       if (feature) {
         updateSelected(feature.get("lau_id"));
+        console.log("Aqui2");
       } else {
         updateSelected(null);
       }
