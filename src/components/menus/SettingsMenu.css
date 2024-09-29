@@ -33,6 +33,7 @@
   width: 48px;
   display: flex;
   flex-direction: row;
+  position: relative;
 
   /* transform: scaleX(1); */
   transition: width 0.5s, opacity 0.5s;
@@ -42,5 +43,73 @@
     width: 0;
     transition: width 0.5s;
     opacity: 0;
+  }
+}
+
+.toggleShowFilter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+
+  width: 100dvw;
+  height: 100dvh;
+
+  > .menu {
+    position: relative;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 25px;
+    width: 60%;
+    height: 80%;
+
+    .menuCol {
+      display: flex;
+      flex-direction: column;
+      width: 90%;
+      height: 85%;
+      margin: auto;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .menuRowSeparator {
+      width: 80%;
+      height: 10px;
+      border-bottom: solid 1px grey;
+    }
+
+    .menuRow {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      column-gap: 20px;
+      row-gap: 20px;
+      justify-content: space-evenly;
+
+      &.indexSelection {
+        width: 98%;
+        margin: 0 auto;
+      }
+
+      > .menuRowItem {
+        padding: 10px;
+        border: 1px solid gray;
+        border-radius: 10px;
+        transition: background-color ease 0.2s;
+        cursor: pointer;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+      }
+      > .menuRowItemSelected {
+        background-color: rgba(0, 0, 0, 0.1);
+        border: 1px solid rgb(36, 36, 36);
+      }
+    }
   }
 }

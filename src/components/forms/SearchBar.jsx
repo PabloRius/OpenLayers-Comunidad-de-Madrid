@@ -35,7 +35,6 @@ export function SearchBar({ selected, updateSelected }) {
       (lau_id) => municipalityData[lau_id].name === name
     );
     if (selected !== id) {
-      console.log("Aqui3");
       updateSelected(id);
       setShowResults(false);
     }

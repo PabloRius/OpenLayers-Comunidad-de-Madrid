@@ -78,6 +78,7 @@ export function DataRenderer({ data, year }) {
                 >
                   <BarChart pctg={parseFloat(values[indicator]) || null} />
                   <ExtraData
+                    indicator={indicator}
                     indexes={indexInfo[indicator].Subindex}
                     values={values}
                     fullData={data[label]}

@@ -1,10 +1,22 @@
-import { Tooltip } from "@mui/material";
+/* eslint-disable react/prop-types */
+import { LineChart } from "@mui/x-charts/LineChart";
 
 import "./TableChart.css";
+import "./TimeLine.css";
 
-/* eslint-disable react/prop-types */
-export function TimeLine({ indexes, values }) {
-  if (!values || !indexes) return;
+export function TimeLine({ indicator, data }) {
+  if (!indicator || !data) return;
+
+  let years = Object.keys(data);
+
+  const values = years.map((year) => {
+    if (data[year][indicator]) {
+      return parseFloat(data[year][indicator]);
+    } else return null;
+  });
+  console.log(values);
+
+  years = Object.keys(data).map((year) => parseInt(year));
 
   return (
     <div
@@ -14,32 +26,41 @@ export function TimeLine({ indexes, values }) {
         height: "auto",
       }}
     >
-      <div className="tableRow">
-        <div className="cell">
-          <strong>Indicator</strong>
-        </div>
-        <div className="cell">
-          <strong>Value</strong>
-        </div>
-        <div className="cell">
-          <strong>Measurement</strong>
-        </div>
-      </div>
-      {Object.keys(indexes).map((subindex) => {
-        return (
-          <div key={subindex} className="tableRow">
-            <Tooltip title={indexes[subindex].Descripción_Variable}>
-              <div className="cell">{indexes[subindex].Nombre_Variable}</div>
-            </Tooltip>
-            <div className="cell">
-              {indexes[subindex].Unidad === "Porcentaje"
-                ? values[subindex] * 100 + "%"
-                : values[subindex]}
-            </div>
-            <div className="cell">{indexes[subindex].Unidad}</div>
-          </div>
-        );
-      })}
+      <LineChart
+        tooltip={{
+          trigger: "item",
+          classes: {
+            root: "custom-linechart-tootlip-root",
+            cell: "custom-linechart-tootlip-cell",
+          },
+        }}
+        height={150}
+        grid={{ horizontal: true, vertical: true }}
+        series={[
+          {
+            data: values,
+          },
+        ]}
+        margin={{
+          top: 10,
+          bottom: 20,
+        }}
+        xAxis={[
+          {
+            data: years,
+            valueFormatter: (value) => String(value),
+            max: years[years.length - 1],
+            min: years[0],
+          },
+        ]}
+        yAxis={[
+          {
+            data: values,
+            max: 1,
+            min: 0.5,
+          },
+        ]}
+      />
     </div>
   );
 }

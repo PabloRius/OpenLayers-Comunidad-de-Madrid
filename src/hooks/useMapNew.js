@@ -12,21 +12,26 @@ import { TileWMS } from "ol/source";
 
 import {
   defaultMunicipalityStyle,
+  highValueStyle,
   layer_1MunicipalityStyle,
   layer_2MunicipalityStyle,
   layer_3MunicipalityStyle,
   layer_MadridMunicipalityStyle,
+  lowValueStyle,
+  midValueStyle,
+  noValueStyle,
   selectedMunicipalityStyle,
 } from "../constants/mapStyles";
 
 import geoJSONData from "../data/map_municipalities_v2.geojson";
 // import geoJSONData from "../data/map_municipalities.geojson";
 import { useMunicipalityData } from "./useMunicipalityData";
+import { useData } from "./useData";
 
-export function useMapNew() {
+export function useMapNew(year) {
   const [settings, updateSettings] = useState({
     showGroupLayers: false,
-    filter: { active: false, groups: [] },
+    filter: { index: null, group: null },
   });
   const [features, setFeatures] = useState([]);
   const mapRef = useRef(null);
@@ -38,16 +43,43 @@ export function useMapNew() {
     features,
     settings,
   });
+  const { data } = useData({ municipality: selected, year: year });
   const { municipalityData } = useMunicipalityData();
 
-  const toggleShowFilter = () => {
+  useEffect(() => {
+    if (settings.filter.index && settings.filter.group !== null) {
+      console.log(settings.filter.group);
+      if (settings.showGroupLayers) toggleShowGroupLayers();
+
+      features.forEach((feature) => {
+        const munic_name = feature.get("lau_id");
+        const group = municipalityData[munic_name].grupo;
+        let style;
+        if (munic_name === selected) style = selectedMunicipalityStyle;
+        else {
+          if (group != settings.filter.group) style = defaultMunicipalityStyle;
+          else {
+            if (!data[munic_name] || !data[munic_name][settings.filter.index])
+              style = noValueStyle;
+            else {
+              const value = data[munic_name][settings.filter.index];
+              style =
+                value < 0.6
+                  ? lowValueStyle
+                  : value >= 0.6 && value < 0.8
+                  ? midValueStyle
+                  : highValueStyle;
+            }
+          }
+        }
+        feature.setStyle(style);
+      });
+    }
+  }, [settings.filter.index, settings.filter.group, data, features, selected]);
+
+  const toggleShowFilter = (newFilter) => {
     updateSettings((prev) => {
-      return {
-        ...prev,
-        filter: {
-          active: !prev.filter.active,
-        },
-      };
+      return { ...prev, filter: { ...newFilter } };
     });
   };
 
@@ -55,10 +87,10 @@ export function useMapNew() {
     const features = dataLayerRef.current?.getSource().getFeatures();
     if (!features) return;
     if (!settings.showGroupLayers) {
+      toggleShowFilter({ index: null, group: null });
       features.forEach((feature) => {
         const munic_name = feature.get("lau_id");
         const group = municipalityData[munic_name].grupo;
-        console.log(group);
         let style;
         if (munic_name === selected) style = selectedMunicipalityStyle;
         else {
@@ -179,7 +211,6 @@ export function useMapNew() {
 
       if (feature) {
         updateSelected(feature.get("lau_id"));
-        console.log("Aqui2");
       } else {
         updateSelected(null);
       }

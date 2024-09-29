@@ -21,7 +21,7 @@ function App() {
     settings,
     toggleShowGroupLayers,
     toggleShowFilter,
-  } = useMapNew();
+  } = useMapNew(year);
   const { data, loading } = useData({ municipality: selected });
 
   return (

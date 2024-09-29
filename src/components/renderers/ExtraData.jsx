@@ -8,7 +8,7 @@ import { TimeLine } from "./TimeLine";
 import { Tablechart } from "./TableChart";
 
 /* eslint-disable react/prop-types */
-export function ExtraData({ indexes, values }) {
+export function ExtraData({ indexes, values, indicator, fullData }) {
   const [showExtendedData, setShowExtendedData] = useState(false);
   const [showTimeLine, setShowTimeline] = useState(false);
   if (!values || !indexes) return;
@@ -48,7 +48,7 @@ export function ExtraData({ indexes, values }) {
         </Tooltip>
       </div>
       {showExtendedData && <Tablechart indexes={indexes} values={values} />}
-      {showTimeLine && <TimeLine indexes={indexes} values={values} />}
+      {showTimeLine && <TimeLine indicator={indicator} data={fullData} />}
     </div>
   );
 }

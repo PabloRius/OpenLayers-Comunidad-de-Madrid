@@ -37,6 +37,7 @@ form {
 input {
   background-color: transparent;
 
+  border: none;
   box-shadow: none;
   height: 100%;
   margin: 0;
@@ -44,5 +45,10 @@ input {
 
   &:focus {
     box-shadow: none;
+    border: none;
+  }
+  &:focus-visible {
+    border: none;
+    outline: none;
   }
 }

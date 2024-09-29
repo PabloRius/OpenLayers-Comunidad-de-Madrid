@@ -20,7 +20,7 @@ export function useMapSelection({ features, settings }) {
       // Reset previously selected feature (if any)
       if (selectedFeature && settings.showGroupLayers) {
         const lau_id = selectedFeature.get("lau_id");
-        const group = municipalityData[lau_id];
+        const group = municipalityData[lau_id].grupo;
         const style =
           group === 3
             ? defaultMunicipalityStyle

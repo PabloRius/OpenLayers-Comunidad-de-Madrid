@@ -7,10 +7,15 @@ export function YearSelector({ selected, changeSelected }) {
       className="container"
       style={{
         position: "absolute",
-        bottom: "10px",
+        bottom: "20px",
         left: "50%",
         transform: "translateX(-50%)",
         width: "50%",
+        background: "linear-gradient(rgb(230,230,230),rgb(255,255,255))",
+        padding: "0 20px",
+        borderRadius: "15px",
+        display: "flex",
+        alignItems: "center",
       }}
     >
       <Slider
